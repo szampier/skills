@@ -36,7 +36,7 @@ ln -s $(pwd)/skills/<skill-name> ~/.agents/skills/user/<skill-name>
 
 | Skill | Description |
 |-------|-------------|
-| *(more coming soon)* | |
+| [eso-tap-obs](eso-tap-obs/) | Query the ESO Science Archive (`ivoa.ObsCore`) via TAP. Translates natural language into ADQL queries, TAP URLs, and ESO Science Portal links. |
 
 ## Contributing
 
