@@ -14,8 +14,9 @@ An EDPS workflow package is a set of Python files that tell the ESO Data Process
 Before editing, verify the workflow loads:
 
 ```bash
-edps -lw                     # lists all registered workflows
-edps run <instrument>.<wkf>  # smoke-test with a small dataset
+edps -lw                                    # lists all registered workflows
+edps -lt -w uves.uves_wkf                   # lists tasks in the UVES workflow (smoke-test)
+edps -lt -w uves.uves_wkf -P 5001          # same, if EDPS runs on a non-default port
 ```
 
 `application.properties` in `~/.edps/` must include a `workflow_dir` pointing to your working directory. Instrument subdirectories must exist (e.g. `muse/muse_wkf.py`).
@@ -94,8 +95,9 @@ Optional modifiers — add as needed:
 ### 5. Verify
 
 ```bash
-edps -lw                    # confirm workflow still loads
-edps run <instr>.<wkf> -d <data_dir>   # check task appears and associations resolve
+edps -lw                                    # confirm workflow still loads
+edps -lt -w uves.uves_wkf                   # list tasks — check your new task appears
+edps -lt -w uves.uves_wkf -P 5001          # same, if EDPS runs on a non-default port (default: 5000)
 ```
 
 ## Modifying an existing task
