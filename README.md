@@ -54,6 +54,12 @@ Skills for querying and working with the [ESO Science Archive](https://archive.e
 - **[eso-tap-cat](./skills/archive/eso-tap-cat/SKILL.md)** — Query PI-delivered scientific catalogues from ESO public surveys via `tap_cat`. Discovers tables, resolves targets, builds cone-search ADQL.
 - **[astroquery-eso](./skills/archive/astroquery-eso/SKILL.md)** — Query the ESO Science Archive using the `astroquery.eso` Python API. Covers raw, Phase 3, and instrument-specific data; downloading; calibration retrieval.
 
+### EDPS
+
+Skills for developing and modifying [EDPS](https://www.eso.org/sci/software/edps.html) (ESO Data Processing System) instrument pipeline workflows.
+
+- **[edps-workflow](./skills/edps/edps-workflow/SKILL.md)** — Add and modify tasks, datasources, and classification rules in EDPS instrument workflow packages.
+
 ## Contributing
 
 1. Pick a category under `skills/` (or propose a new one)
