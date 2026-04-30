@@ -68,31 +68,77 @@ raw_new = (data_source("NEW_TYPE")
 
 No datasource is needed for products from a previous task — pass the task object directly.
 
-### 4. Add the task in `_wkf.py`
+### 4. Add condition/parameter functions in `_task_functions.py` (if needed)
+
+If the task requires conditional associations, runtime parameters, or job-time
+parameter injection, add the functions in `_task_functions.py` before wiring the task:
+
+```python
+# _task_functions.py
+from edps import List, ClassifiedFitsFile, JobParameters, get_parameter, Job
+
+def which_arm(files: List[ClassifiedFitsFile]) -> str:
+    return files[0].get_keyword_value(kwd.seq_arm, None)
+
+def is_uvb(params: JobParameters) -> bool:
+    return get_parameter(params, "arm") == "UVB"
+
+def set_parameters(job: Job):
+    job.parameters.recipe_parameters["recipe.param"] = job.input_files[0].get_keyword_value(kwd.some_kwd, None)
+```
+
+Skip this step entirely if the task uses only static associations with no conditions.
+
+### 5. Add the task in `_wkf.py`
 
 ```python
 from edps import task
 from .instr_datasources import raw_new
 
-# A task that depends on a previous task's output as calibration:
 new_task = (task("new_task_name")
-    .with_recipe("recipe_name")           # must match the recipe's name in esorex
-    .with_main_input(raw_new)             # the primary raw data source
-    .with_associated_input(prev_task, [PREV_PRODUCT])   # output of upstream task
-    .with_meta_targets([SCIENCE])         # only for final science tasks
+    .with_recipe("recipe_name")           # must match the recipe's esorex name
+    .with_main_input(raw_new)             # primary raw datasource
+    .with_associated_input(prev_task, [PREV_PRODUCT])    # upstream task output
+    .with_meta_targets([SCIENCE])         # required for final science outputs
     .build())
 ```
 
 Optional modifiers — add as needed:
 ```python
-    .with_associated_input(ds, min_ret=0)             # optional input
-    .with_associated_input(ds, condition=fn, match_rules=fn)  # conditional
-    .with_alternative_associated_inputs(alt_assoc)    # arm-dependent associations
-    .with_dynamic_parameter("param_name", fn)         # runtime parameter
-    .with_input_filter(PRODUCT_TYPE)                  # filter what goes to recipe
+    .with_associated_input(ds, min_ret=0)                        # optional input
+    .with_associated_input(ds, condition=fn, match_rules=obj)    # conditional/override
+    .with_alternative_associated_inputs(alt_assoc)               # arm/mode-dependent
+    .with_dynamic_parameter("name", fn)                          # runtime parameter
+    .with_condition(fn)                                          # skip task entirely
+    .with_job_processing(fn)                                     # inject recipe params
+    .with_report("template", ReportInput.RECIPE_INPUTS_OUTPUTS)  # QC report
+    .with_input_filter(PRODUCT_TYPE)                             # whitelist recipe inputs
+    .with_grouping_keywords([kwd.tpl_start])                     # group by FITS keyword
 ```
 
-### 5. Verify
+See [REFERENCE.md](REFERENCE.md) for the full list of builder methods.
+
+### 6. Extract to a subworkflow (if complexity warrants it)
+
+If the task group grows beyond ~5 tasks, or the same group is called multiple times
+with different inputs, move it to a separate `_<name>.py` file and decorate with
+`@subworkflow`:
+
+```python
+# instr_calibrations.py
+from edps import subworkflow, task
+
+@subworkflow("my_calibrations", "")
+def my_calibrations(bias, raw_input):
+    step1 = task("step1").with_recipe(...).with_main_input(raw_input).build()
+    step2 = task("step2").with_recipe(...).with_main_input(step1).build()
+    return step1, step2
+```
+
+Keep `_wkf.py` as a thin wiring file. Move conditions and parameter logic to
+`_task_functions.py`, multi-task groups to subworkflow files.
+
+### 7. Verify
 
 ```bash
 edps -lw                                    # confirm workflow still loads
@@ -102,7 +148,12 @@ edps -lt -w uves.uves_wkf -P 5001          # same, if EDPS runs on a non-default
 
 ## Modifying an existing task
 
-Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to adjust how inputs are selected. Always check `_datasources.py` and `_classification.py` for side effects — other tasks may share the same datasource.
+Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to adjust
+how inputs are selected. Always check:
+
+- `_datasources.py` and `_classification.py` — other tasks may share the same datasource
+- `_task_functions.py` — condition functions and job-processing functions may be shared across tasks; changes affect all callers
+- Subworkflow files — if the task lives in a `_<name>.py` subworkflow, edits there propagate to every call site in `_wkf.py`
 
 ## See also
 
