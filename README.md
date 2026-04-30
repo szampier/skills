@@ -18,6 +18,14 @@ These skills are designed to be small, composable, and easy to adapt. They work 
 
 ## Quickstart
 
+Run the installer and pick the skills and agents you want:
+
+```bash
+npx skills@latest add szampier/skills
+```
+
+### Manual install
+
 Clone the repository and symlink the skills you want into your agent's skills directory:
 
 ```bash
