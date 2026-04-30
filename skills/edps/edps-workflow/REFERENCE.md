@@ -25,7 +25,7 @@ t = (task("task_name")
 | `.with_dynamic_parameter(name, fn)` | call `fn(files: List[ClassifiedFitsFile]) -> value` at runtime to compute a named parameter; condition functions can then read it via `get_parameter()` |
 | `.with_condition(fn)` | skip the task entirely if `fn` returns `False` for the current input |
 | `.with_report(template, ReportInput.X, driver='png')` | attach a QC report template |
-| `.with_job_processing(fn)` | inject recipe parameters via a job-editing function (can be called multiple times) |
+| `.with_job_processing(fn)` | inject recipe parameters or extend grouping setup via a job-editing function (can be called multiple times); `fn` receives a `Job` — write to `job.parameters.recipe_parameters` for recipe params, or `job.setup[kwd] = value` to add a dynamic grouping keyword |
 | `.with_cluster(keyword, max_diameter=, max_separation=)` | group observations spatially; values reference `parameters.yaml` keys |
 | `.with_grouping_function(fn)` | custom Python function for dynamic grouping (applied after keyword grouping) |
 | `.with_min_group_size(N)` | minimum inputs per group before the task runs |
