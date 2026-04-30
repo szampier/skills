@@ -1,6 +1,6 @@
 ---
 name: astroquery-eso
-description: Query the ESO Science Archive using the astroquery.eso Python API. Use when writing Python code to search ESO raw data, Phase 3 survey data, or instrument-specific tables; downloading datasets; filtering with ADQL column_filters; listing instruments or surveys; issuing free TAP queries; or retrieving calibration files. Trigger on: astroquery eso, query ESO archive, ESO TAP python, eso.query_instrument, eso.query_main, eso.query_surveys, eso.retrieve_data, eso.get_headers.
+description: "Query the ESO Science Archive using the astroquery.eso Python API. Use when writing Python code to search ESO raw data, Phase 3 survey data, or instrument-specific tables; downloading datasets; filtering with ADQL column_filters; listing instruments or surveys; issuing free TAP queries; or retrieving calibration files. Trigger on: astroquery eso, query ESO archive, ESO TAP python, eso.query_instrument, eso.query_main, eso.query_surveys, eso.retrieve_data, eso.get_headers."
 argument-hint: "What do you want to query? e.g. 'HARPS data for HD203608', 'MUSE observations of NGC 1234', 'download MIDI datasets'"
 ---
 
