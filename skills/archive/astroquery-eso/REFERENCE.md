@@ -35,7 +35,7 @@ local_file = eso.retrieve_data("AMBER.2006-03-14T07:40:19.830")
 files = eso.retrieve_data(
     table["dp_id"][:5],
     destination="/tmp/eso_data",   # default: astropy cache
-    continuation=False,             # True = skip already-downloaded files
+    continuation=False,             # True = force re-download even if already present
     with_calib="raw",               # None | 'raw' | 'processed'
     unzip=True,
 )
