@@ -105,3 +105,4 @@ Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to 
 ## See also
 
 - [REFERENCE.md](REFERENCE.md) — full API for `task`, `data_source`, `classification_rule`, time ranges, association patterns
+- [EXAMPLES.md](EXAMPLES.md) — annotated ESPRESSO workflow patterns: subworkflows, `match_rules`, conditional inputs, reports, dual-arm products

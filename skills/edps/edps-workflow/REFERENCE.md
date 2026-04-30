@@ -15,13 +15,19 @@ t = (task("task_name")
 |---|---|
 | `.with_recipe(name)` | esorex recipe name (must match exactly) |
 | `.with_main_input(ds)` | primary raw datasource |
-| `.with_associated_input(src, [tags], condition=fn, match_rules=fn, min_ret=N)` | add calibration input; `src` can be a task or datasource |
+| `.with_associated_input(src, [tags], condition=fn, match_rules=obj, min_ret=N, max_ret=N)` | add calibration input; `src` can be a task or datasource |
 | `.with_alternative_associated_inputs(alt)` | arm/mode-dependent input via `alternative_association()` |
-| `.with_input_filter(PRODUCT_TYPE)` | restrict which product types are forwarded to the recipe |
+| `.with_input_filter(*PRODUCT_TYPES)` | whitelist product types forwarded to the recipe |
+| `.with_input_map({SRC_TYPE: DST_TYPE})` | rename a product type before passing to the recipe |
 | `.with_meta_targets([SCIENCE])` | mark as a science-producing task (required for final outputs) |
 | `.with_dynamic_parameter(name, fn)` | call `fn` at runtime to compute a recipe parameter |
+| `.with_condition(fn)` | skip the task entirely if `fn` returns `False` for the current input |
+| `.with_report(template, ReportInput.X, driver='png')` | attach a QC report template |
+| `.with_job_processing(fn)` | inject recipe parameters via a job-editing function |
+| `.with_min_group_size(N)` | minimum inputs per group before the task runs |
+| `.with_grouping_keywords([…])` | group inputs by these FITS keywords |
 
-`min_ret=0` makes an input optional (default is 1).
+`min_ret=0` makes an input optional (default is 1). `max_ret=N` caps the number of associated files.
 
 ## `alternative_association()` builder
 
@@ -35,7 +41,36 @@ alt = (alternative_association()
 
 Used with `.with_alternative_associated_inputs(alt)` in a task.
 
-## `data_source()` builder
+## `match_rules()` builder
+
+Override the association time ranges for a specific `.with_associated_input()` without changing the datasource definition. Pass the result as `match_rules=` on a task's associated input.
+
+```python
+from edps import match_rules, RelativeTimeRange
+from edps.generator.time_range import ONE_DAY, TWO_WEEKS, UNLIMITED
+
+next_day = (match_rules()
+    .with_match_keywords(instrument_setup, time_range=RelativeTimeRange(0, 1), level=0)
+    .with_match_keywords(instrument_setup, time_range=ONE_DAY, level=1)
+    .with_match_keywords(instrument_setup, time_range=TWO_WEEKS, level=2)
+    .with_match_keywords(instrument_setup, time_range=UNLIMITED, level=3))
+
+task(...).with_associated_input(wave_ds, [WAVE_MATRIX], match_rules=next_day, condition=is_ut)
+```
+
+## `ReportInput` constants
+
+```python
+from edps import ReportInput
+```
+
+| Constant | Data passed to the QC report template |
+|---|---|
+| `ReportInput.RECIPE_INPUTS` | Input files only |
+| `ReportInput.RECIPE_INPUTS_OUTPUTS` | Input + output files |
+| `ReportInput.RECIPE_OUTPUTS` | Output files only |
+
+
 
 ```python
 from edps import data_source, RelativeTimeRange
@@ -94,7 +129,11 @@ prod_rule = classification_rule('PRODUCT', {
 |---|---|
 | `ONE_DAY` | ±1 day from observation |
 | `ONE_WEEK` | ±7 days |
+| `TWO_WEEKS` | ±14 days |
+| `ONE_MONTH` | ±30 days |
+| `QUARTERLY` | ±90 days |
 | `SAME_NIGHT` | same night only |
+| `IN_THE_PAST` | any file before the observation (use for static calibrations) |
 | `UNLIMITED` | no time constraint |
 | `RelativeTimeRange(-N, N)` | custom ±N days |
 
