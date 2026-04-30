@@ -51,6 +51,7 @@ Then invoke the skill in your agent session (e.g. `/eso-tap-obs`).
 Skills for querying and working with the [ESO Science Archive](https://archive.eso.org).
 
 - **[eso-tap-obs](./skills/archive/eso-tap-obs/SKILL.md)** — Query `ivoa.ObsCore` via the TAP protocol. Translates natural-language requests into ADQL queries, TAP sync URLs, and ESO Science Portal links. Resolves target names via SIMBAD.
+- **[astroquery-eso](./skills/archive/astroquery-eso/SKILL.md)** — Query the ESO Science Archive using the `astroquery.eso` Python API. Covers raw, Phase 3, and instrument-specific data; downloading; calibration retrieval.
 
 ## Contributing
 
