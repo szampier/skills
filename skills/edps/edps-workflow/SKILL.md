@@ -108,4 +108,5 @@ Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to 
 - [examples/espresso.md](examples/espresso.md) — subworkflows, `match_rules`, conditional inputs, reports, dual-arm products
 - [examples/uves.md](examples/uves.md) — reusable `alternative_associated_inputs`, parameter-driven calibration, `with_function`, `with_cluster`, `@dataclass` subworkflow returns
 - [examples/muse.md](examples/muse.md) — `copy_upstream`, `FilterMode.SELECT` on output filters, `with_grouping_function`, custom string meta targets, multiple geometry alternatives per consumer
+- [examples/fors.md](examples/fors.md) — multiple `_wkf.py` files per instrument, shared `fors_common.py`, `imported_tasks` list, task factory with conditional builder chaining, report-only task
 - [examples/kmos.md](examples/kmos.md) — `FilterMode.REJECT`, `copy_all` grouping task, `$`-prefixed dynamic grouping keywords, fine-grained time constants, low-level recipe loop API
