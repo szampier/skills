@@ -14,34 +14,49 @@ t = (task("task_name")
 | Method | Description |
 |---|---|
 | `.with_recipe(name)` | esorex recipe name (must match exactly) |
+| `.with_function(fn, recipes=[…])` | dynamic recipe selection; `fn` receives job context and returns recipe name; list all possible recipes in `recipes=` |
 | `.with_main_input(ds)` | primary raw datasource |
 | `.with_associated_input(src, [tags], condition=fn, match_rules=obj, min_ret=N, max_ret=N)` | add calibration input; `src` can be a task or datasource |
-| `.with_alternative_associated_inputs(alt)` | arm/mode-dependent input via `alternative_association()` |
+| `.with_alternative_associated_inputs(alt)` | arm/mode-dependent input via `alternative_associated_inputs()` or `alternative_association()` |
 | `.with_input_filter(*PRODUCT_TYPES)` | whitelist product types forwarded to the recipe |
 | `.with_input_map({SRC_TYPE: DST_TYPE})` | rename a product type before passing to the recipe |
+| `.with_output_filter(*PRODUCT_TYPES)` | keep only these product types from the recipe output |
 | `.with_meta_targets([SCIENCE])` | mark as a science-producing task (required for final outputs) |
 | `.with_dynamic_parameter(name, fn)` | call `fn` at runtime to compute a recipe parameter |
 | `.with_condition(fn)` | skip the task entirely if `fn` returns `False` for the current input |
 | `.with_report(template, ReportInput.X, driver='png')` | attach a QC report template |
-| `.with_job_processing(fn)` | inject recipe parameters via a job-editing function |
+| `.with_job_processing(fn)` | inject recipe parameters via a job-editing function (can be called multiple times) |
+| `.with_cluster(keyword, max_diameter=, max_separation=)` | group observations spatially; values reference `parameters.yaml` keys |
 | `.with_min_group_size(N)` | minimum inputs per group before the task runs |
 | `.with_grouping_keywords([…])` | group inputs by these FITS keywords |
 
 `min_ret=0` makes an input optional (default is 1). `max_ret=N` caps the number of associated files.
 
-## `alternative_association()` builder
+## `alternative_associated_inputs()` builder
+
+The named version of `alternative_association()`. Define as a variable and reuse across multiple tasks. Supports `match_rules=` per branch.
 
 ```python
-from edps import alternative_association
+from edps import alternative_associated_inputs
 
-alt = (alternative_association()
-    .with_associated_input(ds, condition=is_VIS, match_rules=attach_vis)
-    .with_associated_input(ds, condition=is_NIR, match_rules=attach_nir))
+# Define once, reuse everywhere
+bias_calibrations = (alternative_associated_inputs()
+    .with_associated_input(bias, [MASTER_BIAS_BLUE],            condition=is_blue)
+    .with_associated_input(bias, [MASTER_BIAS_REDL, MASTER_BIAS_REDU], condition=is_red))
+
+# Override match rules for science (different validity range)
+bias_calibrations_for_science = (alternative_associated_inputs()
+    .with_associated_input(bias, [MASTER_BIAS_BLUE], condition=is_blue,
+                           match_rules=science_bias_rules)
+    .with_associated_input(bias, [MASTER_BIAS_REDL, MASTER_BIAS_REDU], condition=is_red,
+                           match_rules=science_bias_rules))
 ```
 
-Used with `.with_alternative_associated_inputs(alt)` in a task.
+Attach with `.with_alternative_associated_inputs(bias_calibrations)` on a task.
 
-## `match_rules()` builder
+`alternative_association()` (from ESPRESSO examples) is the inline anonymous form; `alternative_associated_inputs()` is the named reusable form. Both work with `.with_alternative_associated_inputs()`.
+
+
 
 Override the association time ranges for a specific `.with_associated_input()` without changing the datasource definition. Pass the result as `match_rules=` on a task's associated input.
 

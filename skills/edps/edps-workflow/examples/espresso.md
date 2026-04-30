@@ -1,6 +1,6 @@
-# edps-workflow Examples
+# ESPRESSO workflow examples
 
-Examples drawn from the ESPRESSO instrument pipeline workflow (`espresso_wkf.py` and subworkflows).
+Examples drawn from the ESPRESSO instrument pipeline (`espresso_wkf.py` and subworkflows).
 
 ---
 
