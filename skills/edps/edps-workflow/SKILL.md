@@ -110,3 +110,4 @@ Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to 
 - [examples/muse.md](examples/muse.md) — `copy_upstream`, `FilterMode.SELECT` on output filters, `with_grouping_function`, custom string meta targets, multiple geometry alternatives per consumer
 - [examples/fors.md](examples/fors.md) — multiple `_wkf.py` files per instrument, shared `fors_common.py`, `imported_tasks` list, task factory with conditional builder chaining, report-only task
 - [examples/kmos.md](examples/kmos.md) — `FilterMode.REJECT`, `copy_all` grouping task, `$`-prefixed dynamic grouping keywords, fine-grained time constants, low-level recipe loop API
+- [examples/eris.md](examples/eris.md) — builder-extension helper functions, `get_parameter()` in condition chains, two `@subworkflow` wrappers for one internal function, metatargets as function argument, `Optional[Task]` dataclass fields

@@ -22,7 +22,7 @@ t = (task("task_name")
 | `.with_input_map({SRC_TYPE: DST_TYPE})` | rename a product type before passing to the recipe |
 | `.with_output_filter(*PRODUCT_TYPES, mode=FilterMode.SELECT)` | keep only (SELECT) or drop (REJECT) these output product types |
 | `.with_meta_targets([SCIENCE])` | mark as a science-producing task (required for final outputs) |
-| `.with_dynamic_parameter(name, fn)` | call `fn` at runtime to compute a recipe parameter |
+| `.with_dynamic_parameter(name, fn)` | call `fn(files: List[ClassifiedFitsFile]) -> value` at runtime to compute a named parameter; condition functions can then read it via `get_parameter()` |
 | `.with_condition(fn)` | skip the task entirely if `fn` returns `False` for the current input |
 | `.with_report(template, ReportInput.X, driver='png')` | attach a QC report template |
 | `.with_job_processing(fn)` | inject recipe parameters via a job-editing function (can be called multiple times) |
@@ -85,6 +85,32 @@ from edps import ReportInput
 | `ReportInput.RECIPE_INPUTS` | Input files only |
 | `ReportInput.RECIPE_INPUTS_OUTPUTS` | Input + output files |
 | `ReportInput.RECIPE_OUTPUTS` | Output files only |
+
+## `get_parameter()` in condition functions
+
+Condition functions (`condition=fn`) receive a `JobParameters` object, not the raw files.
+When a task uses `with_dynamic_parameter(name, fn)`, condition functions can read the
+computed value with `get_parameter()`:
+
+```python
+from edps import List, ClassifiedFitsFile, JobParameters, get_parameter
+
+# Dynamic parameter function: receives files, returns a computed value
+def which_band(files: List[ClassifiedFitsFile]) -> str:
+    band = files[0].get_keyword_value(kwd.ins2_nxfw_name, None)
+    return "long" if band in ["L-Broad", "Mp"] else "short"
+
+# Condition function: receives JobParameters, reads the computed value
+def is_long(params: JobParameters) -> bool:
+    return get_parameter(params, "band_used") == "long"
+
+# Wire them together on the task
+task(...).with_dynamic_parameter("band_used", which_band)
+         .with_associated_input(sky_flat, [...], condition=is_long)
+```
+
+This pattern decouples keyword reading from association logic and enables conditions
+that combine multiple keyword-derived values.
 
 
 
