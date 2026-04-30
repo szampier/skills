@@ -1,55 +1,62 @@
-# skills
+<p>
+  <a href="https://www.eso.org">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg">
+      <source media="(prefers-color-scheme: light)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg">
+      <img alt="ESO" src="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg" width="200">
+    </picture>
+  </a>
+</p>
 
-A collection of AI agent skills for [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) and other coding agents.
+# ESO AI Skills
 
-## What are skills?
+A collection of AI agent skills for astronomers working with ESO data services and tools.
 
-Skills are modular instruction sets that extend AI coding agents with specialized knowledge and workflows. Each skill is a directory containing a `SKILL.md` file (and optionally reference files and scripts).
+These skills are designed to be small, composable, and easy to adapt. They work with any AI coding agent — GitHub Copilot, Claude Code, Cursor, and others. Each skill encodes expert knowledge about a specific ESO service or workflow so you don't have to repeat yourself.
 
-## Structure
+> This repository may eventually move to the ESO GitHub organisation.
 
-```
-skills/
-└── skill-name/
-    ├── SKILL.md        # Main instructions (required)
-    ├── REFERENCE.md    # Detailed docs (optional)
-    ├── EXAMPLES.md     # Usage examples (optional)
-    └── scripts/        # Utility scripts (optional)
-```
+## Quickstart
 
-## Installing a skill
-
-### GitHub Copilot CLI
-
-```bash
-gh copilot skill install szampier/skills/<skill-name>
-```
-
-Or clone the repo and symlink a skill into your local skills directory:
+Clone the repository and symlink the skills you want into your agent's skills directory:
 
 ```bash
-git clone https://github.com/szampier/skills.git
-ln -s $(pwd)/skills/<skill-name> ~/.agents/skills/user/<skill-name>
+git clone https://github.com/szampier/skills.git eso-skills
 ```
+
+**GitHub Copilot CLI:**
+```bash
+ln -s $(pwd)/eso-skills/skills/archive/eso-tap-obs ~/.agents/skills/user/eso-tap-obs
+```
+
+**Claude Code:**
+```bash
+ln -s $(pwd)/eso-skills/skills/archive/eso-tap-obs ~/.claude/skills/eso-tap-obs
+```
+
+Then invoke the skill in your agent session (e.g. `/eso-tap-obs`).
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| [eso-tap-obs](eso-tap-obs/) | Query the ESO Science Archive (`ivoa.ObsCore`) via TAP. Translates natural language into ADQL queries, TAP URLs, and ESO Science Portal links. |
+### Archive
+
+Skills for querying and working with the [ESO Science Archive](https://archive.eso.org).
+
+- **[eso-tap-obs](./skills/archive/eso-tap-obs/SKILL.md)** — Query `ivoa.ObsCore` via the TAP protocol. Translates natural-language requests into ADQL queries, TAP sync URLs, and ESO Science Portal links. Resolves target names via SIMBAD.
 
 ## Contributing
 
-1. Create a new directory with a kebab-case name
-2. Add a `SKILL.md` following the [template](#skill-template)
-3. Open a pull request
+1. Pick a category under `skills/` (or propose a new one)
+2. Create `skills/<category>/<skill-name>/SKILL.md` following the template below
+3. Add an entry to the category's `README.md` and the top-level `README.md`
+4. Open a pull request
 
 ### Skill template
 
 ```markdown
 ---
 name: skill-name
-description: One-line description. Use when [specific triggers].
+description: One sentence. Use when [specific triggers].
 ---
 
 # Skill Name
@@ -60,7 +67,7 @@ description: One-line description. Use when [specific triggers].
 
 ## Workflows
 
-[Step-by-step processes]
+[Step-by-step process]
 ```
 
-The `description` field is what the agent reads to decide whether to load the skill — make it specific and trigger-friendly.
+The `description` field is what the agent reads to decide whether to load the skill — make it specific.
