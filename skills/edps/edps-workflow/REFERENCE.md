@@ -112,6 +112,38 @@ task(...).with_dynamic_parameter("band_used", which_band)
 This pattern decouples keyword reading from association logic and enables conditions
 that combine multiple keyword-derived values.
 
+`params.get_workflow_param(name)` is an OO-style equivalent — both read workflow
+parameters from `parameters.yaml` and runtime values from `with_dynamic_parameter()`.
+
+## `Job` object in `with_job_processing()`
+
+The `Job` object passed to `with_job_processing()` functions exposes:
+
+| Attribute | Type | Description |
+|---|---|---|
+| `job.command` | `str` | Recipe name of the current task |
+| `job.task_name` | `str` | Task name as passed to `task('name')` |
+| `job.input_files` | `list` | Main input files |
+| `job.associated_files` | `list` | Associated calibration files (mutable — can filter in place) |
+| `job.parameters.recipe_parameters` | `dict` | Recipe parameters to set (write here) |
+| `job.parameters.workflow_parameters` | `dict` | Workflow parameters from `parameters.yaml` (read-only) |
+| `job.setup` | `dict` | Grouping setup keywords (write to add dynamic grouping keys) |
+
+```python
+from edps import Job
+
+def catalogs(job: Job):
+    # Read a workflow parameter, set a recipe parameter using the recipe name
+    job.parameters.recipe_parameters[f'hawki.{job.command}.cdssearch_astrom'] = \
+        job.parameters.workflow_parameters['cds_astrom_catalog']
+
+    # Different behaviour per task — check task_name
+    if job.task_name in ["object", "object_postprocess"]:
+        # Remove files from the associated list before the recipe runs
+        job.associated_files = [f for f in job.associated_files
+                                 if f.classification != "MATCHSTD_PHOTOM"]
+```
+
 
 
 ```python
