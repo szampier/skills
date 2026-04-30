@@ -6,6 +6,7 @@ description: Query the ESO Science Archive (ivoa.ObsCore) using the TAP protocol
 # ESO TAP Obs
 
 Expert querying of the **ESO Science Archive** via TAP (`ivoa.ObsCore`).
+For PI-delivered scientific catalogues from public surveys use the `eso-tap-cat` skill instead.
 
 ## Workflow
 
