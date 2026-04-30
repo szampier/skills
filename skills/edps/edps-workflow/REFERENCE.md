@@ -18,7 +18,7 @@ t = (task("task_name")
 | `.with_main_input(ds)` | primary raw datasource |
 | `.with_associated_input(src, [tags], condition=fn, match_rules=obj, min_ret=N, max_ret=N)` | add calibration input; `src` can be a task or datasource |
 | `.with_alternative_associated_inputs(alt)` | arm/mode-dependent input via `alternative_associated_inputs()` or `alternative_association()` |
-| `.with_input_filter(*PRODUCT_TYPES)` | whitelist product types forwarded to the recipe |
+| `.with_input_filter(*PRODUCT_TYPES, mode=FilterMode.ACCEPT)` | whitelist (default) or blacklist (`FilterMode.REJECT`) product types forwarded to recipe |
 | `.with_input_map({SRC_TYPE: DST_TYPE})` | rename a product type before passing to the recipe |
 | `.with_output_filter(*PRODUCT_TYPES)` | keep only these product types from the recipe output |
 | `.with_meta_targets([SCIENCE])` | mark as a science-producing task (required for final outputs) |
@@ -148,9 +148,11 @@ prod_rule = classification_rule('PRODUCT', {
 | `ONE_MONTH` | ±30 days |
 | `QUARTERLY` | ±90 days |
 | `SAME_NIGHT` | same night only |
+| `NEXT_DAY` | next calendar day |
+| `ONE_AND_HALF_HOURS` | ±1.5 hours |
 | `IN_THE_PAST` | any file before the observation (use for static calibrations) |
 | `UNLIMITED` | no time constraint |
-| `RelativeTimeRange(-N, N)` | custom ±N days |
+| `RelativeTimeRange(-N, N)` | custom window; fractional days supported (e.g. `RelativeTimeRange(-0.16, 0)` = past 4 hrs) |
 
 ## Workflow file naming convention
 
