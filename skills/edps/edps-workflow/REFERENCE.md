@@ -20,13 +20,14 @@ t = (task("task_name")
 | `.with_alternative_associated_inputs(alt)` | arm/mode-dependent input via `alternative_associated_inputs()` or `alternative_association()` |
 | `.with_input_filter(*PRODUCT_TYPES, mode=FilterMode.ACCEPT)` | whitelist (default) or blacklist (`FilterMode.REJECT`) product types forwarded to recipe |
 | `.with_input_map({SRC_TYPE: DST_TYPE})` | rename a product type before passing to the recipe |
-| `.with_output_filter(*PRODUCT_TYPES)` | keep only these product types from the recipe output |
+| `.with_output_filter(*PRODUCT_TYPES, mode=FilterMode.SELECT)` | keep only (SELECT) or drop (REJECT) these output product types |
 | `.with_meta_targets([SCIENCE])` | mark as a science-producing task (required for final outputs) |
 | `.with_dynamic_parameter(name, fn)` | call `fn` at runtime to compute a recipe parameter |
 | `.with_condition(fn)` | skip the task entirely if `fn` returns `False` for the current input |
 | `.with_report(template, ReportInput.X, driver='png')` | attach a QC report template |
 | `.with_job_processing(fn)` | inject recipe parameters via a job-editing function (can be called multiple times) |
 | `.with_cluster(keyword, max_diameter=, max_separation=)` | group observations spatially; values reference `parameters.yaml` keys |
+| `.with_grouping_function(fn)` | custom Python function for dynamic grouping (applied after keyword grouping) |
 | `.with_min_group_size(N)` | minimum inputs per group before the task runs |
 | `.with_grouping_keywords([…])` | group inputs by these FITS keywords |
 

@@ -107,4 +107,5 @@ Change `.with_associated_input()`, `.with_match_keywords()`, or `time_range` to 
 - [REFERENCE.md](REFERENCE.md) — full API for `task`, `data_source`, `classification_rule`, time ranges, association patterns
 - [examples/espresso.md](examples/espresso.md) — subworkflows, `match_rules`, conditional inputs, reports, dual-arm products
 - [examples/uves.md](examples/uves.md) — reusable `alternative_associated_inputs`, parameter-driven calibration, `with_function`, `with_cluster`, `@dataclass` subworkflow returns
+- [examples/muse.md](examples/muse.md) — `copy_upstream`, `FilterMode.SELECT` on output filters, `with_grouping_function`, custom string meta targets, multiple geometry alternatives per consumer
 - [examples/kmos.md](examples/kmos.md) — `FilterMode.REJECT`, `copy_all` grouping task, `$`-prefixed dynamic grouping keywords, fine-grained time constants, low-level recipe loop API
