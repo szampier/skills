@@ -1,0 +1,9 @@
+{
+  "name": "eso-skills",
+  "skills": [
+    "./skills/archive/eso-tap-obs",
+    "./skills/archive/eso-tap-cat",
+    "./skills/archive/astroquery-eso",
+    "./skills/edps/edps-workflow"
+  ]
+}
