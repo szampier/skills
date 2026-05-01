@@ -1,9 +1,9 @@
 <p>
   <a href="https://www.eso.org">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg">
-      <source media="(prefers-color-scheme: light)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg">
-      <img alt="ESO" src="https://www.eso.org/public/archives/logos/screen/eso-logo-p60b.jpg" width="200">
+      <source media="(prefers-color-scheme: dark)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p3005.jpg">
+      <source media="(prefers-color-scheme: light)" srcset="https://www.eso.org/public/archives/logos/screen/eso-logo-p3005.jpg">
+      <img alt="ESO" src="https://www.eso.org/public/archives/logos/screen/eso-logo-p3005.jpg" width="200">
     </picture>
   </a>
 </p>
